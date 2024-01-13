@@ -10,14 +10,13 @@ import SwiftUI
 // "behaves like a View" (or whatever protocol) Protocol Oriented Program
 struct ContentView: View {
     // Computed Property the value of body is computed; what is inside the {}
+    let emojis = ["👻", "🎃", "🕷️", "👺"]
     var body: some View {
         HStack {
-            CardView(isFaceUp: true)
-            CardView()
-            CardView()
-            CardView()
+            ForEach(emojis.indices, id: \.self) { index in
+                CardView(content: emojis[index])
+            }
         }
-
         .foregroundColor(.orange)
         .imageScale(.small)
         .padding()
@@ -26,6 +25,7 @@ struct ContentView: View {
 
 struct CardView: View {
     @State var isFaceUp = false
+    let content: String
 
     var body: some View {
         ZStack(alignment: .center) {
@@ -33,7 +33,7 @@ struct CardView: View {
             if isFaceUp {
                 base.foregroundColor(.white)
                 base.strokeBorder(lineWidth: 2)
-                Text("👻").font(.largeTitle)
+                Text(content).font(.largeTitle)
             } else {
                 base
             }
