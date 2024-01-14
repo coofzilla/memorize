@@ -9,41 +9,42 @@ import SwiftUI
 
 // "behaves like a View" (or whatever protocol) Protocol Oriented Program
 struct ContentView: View {
+    enum Theme {
+        case christmas
+        case halloween
+        case beach
+    }
+
     // Computed Property the value of body is computed; what is inside the {}
-    let emojis = ["👻", "🎃", "🕷️", "👺", "💥", "💅", "🧹", "🍬", "😈", "🧟‍♂️", "💀", "🐧"]
-    @State var cardCount = 4
+    @State var emojis: [String] = []
+
+    let christmasEmojis = ["🎄", "🎄", "🎅", "🎅", "🦌", "🦌", "🎁", "🎁", "❄️", "❄️", "⛄", "⛄"]
+    let halloweenEmojis = ["🎃", "🎃", "👻", "👻", "🕸️", "🕸️", "🦇", "🦇", "🍬", "🍬", "🧙‍♀️", "🧙‍♀️"]
+    let beachEmojis = ["🏖️", "🏖️", "🌊", "🌊", "🏄‍♂️", "🏄‍♂️", "🌴", "🌴", "🌞", "🌞", "⛱️", "⛱️"]
 
     var body: some View {
+        Text("Memorize!").font(.largeTitle)
         VStack {
             ScrollView {
                 Cards
             }
             Spacer()
-            CardAdjusters
+            HStack {
+                Spacer()
+                ThemeButton(theme: .christmas)
+                Spacer()
+                ThemeButton(theme: .halloween)
+                Spacer()
+                ThemeButton(theme: .beach)
+                Spacer()
+            }
         }
         .padding()
     }
 
-    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
-        Button(action: {
-            cardCount += offset
-        }, label: {
-            Image(systemName: symbol)
-        })
-        .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
-    }
-
-    var CardRemover: some View {
-        cardCountAdjuster(by: -1, symbol: "rectangle.stack.fill.badge.minus")
-    }
-
-    var CardAdder: some View {
-        cardCountAdjuster(by: 1, symbol: "rectangle.stack.fill.badge.plus")
-    }
-
     var Cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
-            ForEach(0 ..< cardCount, id: \.self) { index in
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 80), spacing: 5)], spacing: 5) {
+            ForEach(emojis.indices, id: \.self) { index in
                 CardView(content: emojis[index])
                     .aspectRatio(2 / 3, contentMode: .fit)
             }
@@ -51,13 +52,35 @@ struct ContentView: View {
         .foregroundColor(.orange)
     }
 
-    var CardAdjusters: some View {
-        HStack {
-            CardAdder
-            Spacer()
-            CardRemover
+    @ViewBuilder
+    func ThemeButton(theme: Theme) -> some View {
+        Button(action: {
+            switch theme {
+            case .christmas:
+                emojis = christmasEmojis.shuffled()
+            case .halloween:
+                emojis = halloweenEmojis.shuffled()
+            case .beach:
+                emojis = beachEmojis.shuffled()
+            }
+        }, label: {
+            VStack {
+                Image(systemName: systemImageName(for: theme)).font(/*@START_MENU_TOKEN@*/ .title/*@END_MENU_TOKEN@*/)
+                Text(String(describing: theme)).font(.subheadline)
+            }
+
+        })
+    }
+
+    private func systemImageName(for theme: Theme) -> String {
+        switch theme {
+        case .christmas:
+            return "snowflake"
+        case .halloween:
+            return "moon.stars.fill"
+        case .beach:
+            return "sun.max"
         }
-        .imageScale(.large)
     }
 }
 
