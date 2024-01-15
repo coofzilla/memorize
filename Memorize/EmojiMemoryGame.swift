@@ -10,12 +10,7 @@
 import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
-    private static var emojis: [String] = []
-
-    private let spaceEmojis = ["🌌", "🚀", "🪐", "🌠", "🌛", "👽", "🌍", "🛰", "🔭", "💫", "☄️", "🌟"]
-    private let christmasEmojis = ["🎄", "🎅", "🦌", "🎁", "❄️", "⛄"]
-    private let halloweenEmojis = ["🎃", "🎃", "👻", "👻", "🕸️", "🕸️", "🦇", "🦇", "🍬", "🍬", "🧙‍♀️", "🧙‍♀️"]
-    private let beachEmojis = ["🏖️", "🏖️", "🌊", "🌊", "🏄‍♂️", "🏄‍♂️", "🌴", "🌴", "🌞", "🌞", "⛱️", "⛱️"]
+    private static var emojis: [String] = ["🌌", "🚀", "🪐", "🌠", "🌛", "👽", "🌍", "🛰", "🔭", "💫", "☄️", "🌟"]
 
     private static func createMemoryGame() -> MemoryGame<String> {
         return MemoryGame(numberOfPairsOfCards: 12) { pairIndex in
@@ -27,30 +22,19 @@ class EmojiMemoryGame: ObservableObject {
         }
     }
 
-    init() {
-        changeTheme(to: .christmas)
-    }
-
     @Published private var model = createMemoryGame()
 
     var cards: [MemoryGame<String>.Card] {
         return model.cards
     }
 
-    func choose(_ card: MemoryGame<String>.Card) {
-        model.choose(card: card)
+    // MARK: Intents
+
+    func shuffle() {
+        model.shuffle()
     }
 
-    func changeTheme(to theme: Theme) {
-        switch theme {
-        case .christmas:
-            EmojiMemoryGame.emojis = christmasEmojis.shuffled()
-        case .halloween:
-            EmojiMemoryGame.emojis = halloweenEmojis.shuffled()
-        case .beach:
-            EmojiMemoryGame.emojis = beachEmojis.shuffled()
-        }
-
-        model = EmojiMemoryGame.createMemoryGame()
+    func choose(_ card: MemoryGame<String>.Card) {
+        model.choose(card: card)
     }
 }

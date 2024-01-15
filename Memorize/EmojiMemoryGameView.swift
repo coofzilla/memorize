@@ -15,23 +15,15 @@ struct EmojiMemoryGameView: View {
         Text("Memorize!").font(.largeTitle)
         VStack {
             ScrollView {
-                Cards
+                cards
             }
             Spacer()
-            HStack {
-                Spacer()
-                ThemeButton(theme: .christmas)
-                Spacer()
-                ThemeButton(theme: .halloween)
-                Spacer()
-                ThemeButton(theme: .beach)
-                Spacer()
-            }
+            shuffle
         }
         .padding()
     }
 
-    var Cards: some View {
+    private var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0) {
             ForEach(viewModel.cards.indices, id: \.self) { index in
                 CardView(viewModel.cards[index])
@@ -42,27 +34,11 @@ struct EmojiMemoryGameView: View {
         .foregroundColor(.orange)
     }
 
-    @ViewBuilder
-    func ThemeButton(theme: Theme) -> some View {
-        Button(action: {
-            viewModel.changeTheme(to: theme)
-        }, label: {
-            VStack {
-                Image(systemName: systemImageName(for: theme)).font(/*@START_MENU_TOKEN@*/ .title/*@END_MENU_TOKEN@*/)
-                Text(String(describing: theme)).font(.subheadline)
+    private var shuffle: some View {
+        Button("Shuffle") {
+            withAnimation {
+                viewModel.shuffle()
             }
-
-        })
-    }
-
-    private func systemImageName(for theme: Theme) -> String {
-        switch theme {
-        case .christmas:
-            return "snowflake"
-        case .halloween:
-            return "moon.stars.fill"
-        case .beach:
-            return "sun.max"
         }
     }
 }
