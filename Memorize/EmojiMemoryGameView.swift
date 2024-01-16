@@ -15,31 +15,24 @@ struct EmojiMemoryGameView: View {
         Text("Memorize!").font(.largeTitle)
         VStack {
             ScrollView {
-                cards
+                cards.animation(.default, value: viewModel.cards)
             }
-            Spacer()
-            shuffle
+            Button("Shuffle") {
+                viewModel.shuffle()
+            }
         }
         .padding()
     }
 
     private var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0) {
-            ForEach(viewModel.cards.indices, id: \.self) { index in
-                CardView(viewModel.cards[index])
+            ForEach(viewModel.cards) { card in
+                CardView(card)
                     .aspectRatio(2 / 3, contentMode: .fit)
                     .padding(4)
             }
         }
         .foregroundColor(.orange)
-    }
-
-    private var shuffle: some View {
-        Button("Shuffle") {
-            withAnimation {
-                viewModel.shuffle()
-            }
-        }
     }
 }
 
